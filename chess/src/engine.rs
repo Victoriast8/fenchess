@@ -1,3 +1,6 @@
+use std::iter::Peekable;
+use std::str::Chars;
+
 enum PieceType {
     King,
     Queen,
@@ -37,12 +40,8 @@ fn new_fen() -> String {
 
 /// Parsing functions
 // lexeme removes leading whitespace
-fn lexeme(s: &str) -> String {
-    let mut iter = s.chars();
-    match iter.next() {
-        Some(' ') => lexeme(iter.as_str()),
-        _ => s.to_string(),
-    }
+fn lexeme(iter: &mut Peekable<Chars>) -> () {
+    while Some(&' ') == iter.peek() { iter.next(); }
 }
 
 fn pCol(c: char) -> u8 {
@@ -55,13 +54,15 @@ fn pCol(c: char) -> u8 {
 
 fn pRow(c: char) -> u8 {
     match c.to_digit(10) {
-        Some(c') if c' < 9 => c',
+        Some(c1) if c1 < 9 => c1 as u8,
         _ => 0,
     }
 }
 
-fn pPosition(s: &mut impl Iterator<Item = char>) -> Option<Position> {
-    None
+fn pPosition(s: &mut Peekable<Chars>) -> Option<Position> {
+    match s.next() {
+        Some(c) => p
+    }
 }
 
 fn isRow(x: i32) -> bool {
@@ -69,7 +70,7 @@ fn isRow(x: i32) -> bool {
 }
 
 fn parse_fen(fen: String) -> Game {
-    let fenit = fen.chars();
+    let mut fenit = fen.chars().peekable();
     let mut board_vec: Vec<Option<Piece>> = Vec::new();
 
     // build board
@@ -90,7 +91,8 @@ fn parse_fen(fen: String) -> Game {
             ' ' => break,
             '/' => continue,
             _   => None,
-        })
+        });
+        fenit.next();
     }
     
     board_vec.reverse();
